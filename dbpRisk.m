@@ -95,7 +95,7 @@ function opening(hObject, eventdata, handles)
     handles.file=[];
     path(path,genpath(pwd)); % Set current folder and subfolders in PATH
     g=axes('Parent',handles.axes1);
-    handles.logo=imshow('\MISC\aquarisk.png','Parent',g);
+    handles.logo=imshow('\MISC\dbpRisk.png','Parent',g);
 
 
     set(handles.SaveNetwork,'visible','off');
@@ -203,8 +203,8 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
         if exist([pwd,'\RESULTS\','Run.0'])==2
             delete([pwd,'\RESULTS\','Run.0']);
         end   
-        if findobj('Tag','Colorbar'),delete(findobj('Tag','Colorbar'));end
-        if findobj('Tag','legend'),delete(findobj('Tag','legend'));end
+        if ~isempty(findobj('Tag','Colorbar')),delete(findobj('Tag','Colorbar'));end
+        if ~isempty(findobj('Tag','legend')),delete(findobj('Tag','legend'));end
         handles.msg=['>>Load Input File "',InputFile,'" Successful.'];
         Gethandles.msg=['>>Current version of EPANET:',num2str(B.version)];
         handles.msg=[handles.msg;{Gethandles.msg}];
@@ -1108,7 +1108,7 @@ function none_Callback(hObject, eventdata, handles)
     set(handles.none,'Value',1);
 
     if get(handles.none,'Value')
-        if findobj('Tag','Colorbar'),delete(findobj('Tag','Colorbar'));end
+        if ~isempty(findobj('Tag','Colorbar')),delete(findobj('Tag','Colorbar'));end
         font(hObject, eventdata, handles, 0)
         set(handles.Tbar,'visible','off');
         str=get(handles.Map,'String');
@@ -1188,8 +1188,8 @@ function handles=colorM(hObject, eventdata, handles,el)
     set(handles.Results,'enable','inactive');
     set(handles.LoadInpFile,'enable','inactive');
 
-    if findobj('Tag','Colorbar'),delete(findobj('Tag','Colorbar'));end    
-    if findobj('Tag','legend'),delete(findobj('Tag','legend'));end    
+    if ~isempty(findobj('Tag','Colorbar')),delete(findobj('Tag','Colorbar'));end    
+    if ~isempty(findobj('Tag','legend')),delete(findobj('Tag','legend'));end    
 
     if el==1
         h=waitbar(0.5,['Initializing waitbar ',num2str(50),'%'],'Name','Running...');
@@ -1379,7 +1379,7 @@ function handles=colorM(hObject, eventdata, handles,el)
 %     ENplotB('highlightnode',[handles.IDb handles.IDc handles.IDg handles.IDcc handles.IDaa handles.IDW],'colornode',[handles.Colorb handles.Colorc handles.Colorg handles.Colorcc handles.Coloraa handles.ColorW],...
 %     'highlightlink',[handles.IDbl handles.IDcl handles.IDgl handles.IDccl handles.IDaal],'colorlink',[handles.Colorbl handles.Colorcl handles.Colorgl handles.Colorccl handles.Coloraal],...
 %     'axes',handles.previousg);
-    if findobj('Tag','legend'),delete(findobj('Tag','legend'));end    
+    if ~isempty(findobj('Tag','legend')),delete(findobj('Tag','legend'));end    
     str=get(handles.Map,'String');
     if strcmp('Reset',str)
         if handles.B.NodeCoordinates{2}(1)<85 && handles.B.NodeCoordinates{2}(1)>-85 ...
@@ -1759,7 +1759,7 @@ function [axesid] = ENplotB(handles,varargin)
 
         if length(hh) && ~isempty(selectColorNode)
             if handles.B.NodeBaseDemands(i)==0 && (abs(sum(Flow(r{i})))>0.001)==0
-                plot(x, y,'.','Color',[.5 .5 .5],'Parent',axesid);%only for AquaRisk
+                plot(x, y,'.','Color',[.5 .5 .5],'Parent',axesid);%only for dbpRisk
                 gof=1;
             end
         end
