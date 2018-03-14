@@ -1,0 +1,5 @@
+In the first case, we introduce chlorine 1 mg/L and TOC 2.5 mg/L in reservoirs. In
+addition, we choose 20 celcius in each pipe and tank. Therefore, the program was run
+for two dierent cases in relation with the chlorine dose. The only parameter that
+varied in the second case was the chlorine dose which was 0.5 mg/L. The rest of the
+parameters are the same.

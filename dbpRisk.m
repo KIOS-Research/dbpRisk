@@ -22,7 +22,7 @@ function varargout = dbpRisk(varargin)
 
 % Edit the above text to modify the response to help dbpRisk
 
-% Last Modified by GUIDE v2.5 23-Jun-2014 11:01:18
+% Last Modified by GUIDE v2.5 13-Mar-2018 19:09:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -71,8 +71,10 @@ function opening(hObject, eventdata, handles)
     catch err
     end
     sfilesexist = dir('s*'); 
-    if (~isempty(sfilesexist)), delete s*, end;
-
+    if (~isempty(sfilesexist)), delete s*, end
+    set(handles.Run,'str','Run');
+    set(handles.Run,'enable','on');
+    
     handles.MapOn=0;
     handles.Count=0;
     handles.countRun=0;
@@ -95,7 +97,7 @@ function opening(hObject, eventdata, handles)
     handles.file=[];
     path(path,genpath(pwd)); % Set current folder and subfolders in PATH
     g=axes('Parent',handles.axes1);
-    handles.logo=imshow('\MISC\dbpRisk.png','Parent',g);
+    handles.logo=imshow([pwd,'\MISC/dbpRisk.png'],'Parent',g);
 
 
     set(handles.SaveNetwork,'visible','off');
@@ -176,7 +178,7 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
         set(handles.Map,'enable','inactive');
     
         col = get(handles.LoadInpFile,'backg');  % Get the background color of the figure.
-        set(handles.LoadInpFile,'str','LOADING...','backg','w');
+        set(handles.LoadInpFile,'str','LOADING...');
         pause(.1);
         % Load Input File
         B=epanet(InputFile); %clc;
@@ -188,12 +190,6 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
             return
         end
 
-        if exist([pwd,'\RESULTS\','hNodesIhandles.B.f'])==2
-            delete([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');
-        end
-        if exist([pwd,'\RESULTS\','hLinksIhandles.B.f'])==2
-            delete([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat');
-        end
         if exist([pwd,'\RESULTS\','temp2.msx'])==2
             delete([pwd,'\RESULTS\','temp2.msx']);
         end
@@ -336,17 +332,7 @@ function LinksID_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of LinksID
-    if exist([pwd,'\RESULTS\','hNodesIhandles.B.f'])==2
-        load([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');
-        delete(hNodesID(:)); hNodesID=[];
-        save([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');    
-    end
-    if exist([pwd,'\RESULTS\','hLinksIhandles.B.f'])==2
-        load([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat');
-        delete(hLinksID(:)); hLinksID=[];
-        save([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat');
-    end
-    
+    delete(findall(handles.axes1,'Type','text'))    
     value=get(handles.LinksID,'Value');
     FontSize = str2num(get(handles.FontsizeENplot,'String'));
     if ~length(FontSize) || FontSize<0 || FontSize>30 || FontSize==0
@@ -366,7 +352,6 @@ function LinksID_Callback(hObject, eventdata, handles)
             y2=handles.B.NodeCoordinates{2}(handles.B.NodesConnectingLinksIndex(i,2));
             hLinksID(i)=text((x1+x2)/2,(y1+y2)/2,handles.B.LinkNameID(i),'FontSize',FontSize);
         end
-        save([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat');
     end
     
     guidata(hObject, handles);
@@ -378,17 +363,7 @@ function NodesID_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of NodesID
-    if exist([pwd,'\RESULTS\','hNodesIhandles.B.f'])==2
-        load([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');
-        delete(hNodesID(:)); hNodesID=[];
-        save([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');    
-    end
-    if exist([pwd,'\RESULTS\','hLinksIhandles.B.f'])==2
-        load([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat');
-        delete(hLinksID(:)); hLinksID=[];
-        save([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat');
-    end
-    
+    delete(findall(handles.axes1,'Type','text'))
     value=get(handles.NodesID,'Value');
     FontSize = str2num(get(handles.FontsizeENplot,'String'));
     if  ~length(FontSize) || FontSize<0 || FontSize>30 || FontSize==0
@@ -404,7 +379,6 @@ function NodesID_Callback(hObject, eventdata, handles)
         for i=1:handles.B.NodeCount
             hNodesID(i)=text(handles.B.NodeCoordinates{1}(i),handles.B.NodeCoordinates{2}(i),char(handles.B.NodeNameID(i)),'FontSize',FontSize,'Tag','Task String');
         end
-        save([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');
     end
     
     guidata(hObject, handles);
@@ -417,9 +391,9 @@ function FontsizeENplot_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of FontsizeENplotText as text
 %        str2double(get(hObject,'String')) returns contents of FontsizeENplotText as a double
-    if get(handles.NodesID,'Value');
+    if get(handles.NodesID,'Value')
         NodesID_Callback(hObject, eventdata, handles);
-    elseif get(handles.LinksID,'Value');
+    elseif get(handles.LinksID,'Value')
         LinksID_Callback(hObject, eventdata, handles);
     end
 
@@ -455,11 +429,15 @@ function SaveNetwork_Callback(hObject, eventdata, handles)
     if ~isempty(answer)
         answer=char(answer);
         f=getframe(handles.figure1);
-        imwrite(f.cdata,[answer,'.bmp'],'bmp');
+        imwrite(f.cdata,[answer,'.png'],'png');
         figure(1);
-        imshow([answer,'.bmp']);
+        imshow([answer,'.png']);
         % save to pdf and bmp
-        print(gcf,'-dpdf',answer,sprintf('-r%d',150));
+        %print(gcf,'-dpdf',answer,sprintf('-r%d',150));
+        try
+            winopen([answer,'.png'])
+        catch e
+        end
         close(1);   
     end
 % --- Executes on button press in pan.
@@ -550,7 +528,7 @@ function Map_Callback(hObject, eventdata, handles)
 
     if strcmp('Map',str) 
         col = get(handles.Map,'backg');
-        set(handles.Map,'str','Loading..','backg','w')          
+        set(handles.Map,'str','Loading..')          
 
         if handles.B.NodeCoordinates{2}(1)<85 && handles.B.NodeCoordinates{2}(1)>-85 ...
                 && handles.B.NodeCoordinates{1}(1)<180 && handles.B.NodeCoordinates{1}(1)>-180
@@ -577,7 +555,7 @@ function Map_Callback(hObject, eventdata, handles)
     end
     if strcmp('Reset',str)
         col = get(handles.Map,'backg');
-        set(handles.Map,'str','Loading..','backg','w')        
+        set(handles.Map,'str','Loading..')        
         handles.MapOn=1;               
         save([pwd,'\RESULTS\','map.1'],'handles','-mat');  
         hold on;
@@ -821,10 +799,14 @@ function Run_Callback(hObject, eventdata, handles)
 % hObject    handle to Run (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    if strcmp(get(handles.Map,'String'), 'Reset')
+        warndlg('Please reset map.','Run')
+        return
+    end
     close(findobj('type','figure','name','Results'));
 
     handles.col = get(handles.Run,'backg');  % Get the background color of the figure.
-    set(handles.Run,'str','Running...','backg','w');pause(.1);
+    set(handles.Run,'str','Running...');pause(.1);
     set(handles.Run,'enable','inactive');
 %     set(handles.LoadData,'enable','inactive');
     set(handles.SetupAnalysis,'enable','inactive');
@@ -1174,8 +1156,10 @@ function axes1_ResizeFcn(hObject, eventdata, handles)
   
 
 function handles=colorM(hObject, eventdata, handles,el)
-%     profile on
-%     tic
+    if strcmp(get(handles.Map,'String'), 'Reset')
+        warndlg('Please reset map.','Run')
+        return
+    end
     set(handles.Tbar,'visible','off');
     set(handles.s1,'enable','inactive');
     set(handles.s2,'enable','inactive');
@@ -1460,14 +1444,12 @@ function font(hObject, eventdata, handles, arg)
         set(handles.NodesID,'value',0)
         if arg==0
             hNodesID=[];
-            save([pwd,'\RESULTS\','hNodesIhandles.B.f'],'hNodesID','-mat');    
         end
         NodesID_Callback(hObject, eventdata, handles);
     end
     if l==1
         if arg==0
             hLinksID=[];
-            save([pwd,'\RESULTS\','hLinksIhandles.B.f'],'hLinksID','-mat'); 
         end
         set(handles.LinksID,'value',0)
         LinksID_Callback(hObject, eventdata, handles);
@@ -1583,6 +1565,8 @@ function [axesid] = ENplotB(handles,varargin)
     selectColorNode={''};
     selectColorLink={''};
     axesid=0;
+    legendIndices=[];
+    l=zeros(1,6);
 
     for i=1:(nargin/2)
         argument =lower(varargin{2*(i-1)+1});
@@ -1677,10 +1661,12 @@ function [axesid] = ENplotB(handles,varargin)
             end
         end
         if (abs(Flow(i))>0.001)~=0 && length(hh)
-            h(:,4)=line([x1 handles.B.NodeCoordinates{3}{i} x2],[y1 handles.B.NodeCoordinates{4}{i} y2],'LineWidth',1,'Parent',axesid);
+            h(:,1)=line([x1 handles.B.NodeCoordinates{3}{i} x2],[y1 handles.B.NodeCoordinates{4}{i} y2],'LineWidth',1,'Parent',axesid);
+            if ~l(1), legendIndices = [legendIndices 1]; l(1)=1; end
         end
         if ~length(hh)
-            h(:,4)=line([x1 handles.B.NodeCoordinates{3}{i} x2],[y1 handles.B.NodeCoordinates{4}{i} y2],'LineWidth',1,'Parent',axesid);
+            h(:,1)=line([x1 handles.B.NodeCoordinates{3}{i} x2],[y1 handles.B.NodeCoordinates{4}{i} y2],'LineWidth',1,'Parent',axesid);
+            if ~l(1), legendIndices = [legendIndices 1]; l(1)=1; end
         end
         legendString{4} = char('Pipes');
         % Plot Pumps
@@ -1689,9 +1675,10 @@ function [axesid] = ENplotB(handles,varargin)
             if length(hh) && isempty(selectColorLink)
                 colornode = 'r';
             end
-            h(:,5)=plot((x1+x2)/2,(y1+y2)/2,'mv','LineWidth',2,'MarkerEdgeColor','m',...
+            h(:,2)=plot((x1+x2)/2,(y1+y2)/2,'mv','LineWidth',2,'MarkerEdgeColor','m',...
                 'MarkerFaceColor','m',...
                 'MarkerSize',5,'Parent',axesid);
+            if ~l(2), legendIndices = [legendIndices 2]; l(2)=1; end
             plot((x1+x2)/2,(y1+y2)/2,'mv','LineWidth',2,'MarkerEdgeColor',colornode,...
                 'MarkerFaceColor',colornode,...
                 'MarkerSize',5,'Parent',axesid);
@@ -1705,9 +1692,10 @@ function [axesid] = ENplotB(handles,varargin)
             if length(hh) && isempty(selectColorLink)
                 colornode = 'r';
             end
-            h(:,6)=plot((x1+x2)/2,(y1+y2)/2,'k*','LineWidth',2,'MarkerEdgeColor',colornode,...
+            h(:,3)=plot((x1+x2)/2,(y1+y2)/2,'k*','LineWidth',2,'MarkerEdgeColor',colornode,...
                 'MarkerFaceColor',colornode,'MarkerSize',7,'Parent',axesid);
             legendString{6} = char('Valves');
+            if ~l(3), legendIndices = [legendIndices 3]; l(3)=1; end
         end
 
         % Show Link id
@@ -1765,13 +1753,14 @@ function [axesid] = ENplotB(handles,varargin)
         end
         
         if handles.B.NodeBaseDemands(i)~=0 && length(hh) && (abs(sum(Flow(r{i})))>0.001)==0
-            h(:,1)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
+            h(:,4)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
                 'MarkerFaceColor','b',...
                 'MarkerSize',5,'Parent',axesid);
+            if ~l(4), legendIndices = [legendIndices 4]; l(4)=1; end
             legendString{1}= char('Junctions');
         end
         if ~length(hh)
-            h(:,1)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
+            h(:,4)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
                 'MarkerFaceColor','b',...
                 'MarkerSize',5,'Parent',axesid);
             legendString{1}= char('Junctions');
@@ -1782,9 +1771,10 @@ function [axesid] = ENplotB(handles,varargin)
             if length(hh) && isempty(selectColorNode)
                 colornode = 'r';
             end
-            h(:,2)=plot(x,y,'s','LineWidth',2,'MarkerEdgeColor','g',...
+            h(:,5)=plot(x,y,'s','LineWidth',2,'MarkerEdgeColor','g',...
                 'MarkerFaceColor','g',...
                 'MarkerSize',13,'Parent',axesid);
+            if ~l(5), legendIndices = [legendIndices 5]; l(5)=1; end
             plot(x,y,'s','LineWidth',2,'MarkerEdgeColor', colornode,...
                 'MarkerFaceColor', colornode,...
                 'MarkerSize',13,'Parent',axesid);
@@ -1798,9 +1788,10 @@ function [axesid] = ENplotB(handles,varargin)
             elseif length(hh) && ~isempty(selectColorNode)
                 colornode= 'c';
             end
-            h(:,3)=plot(x,y,'p','LineWidth',2,'MarkerEdgeColor','c',...
+            h(:,6)=plot(x,y,'p','LineWidth',2,'MarkerEdgeColor','c',...
                 'MarkerFaceColor','c',...
                 'MarkerSize',16,'Parent',axesid);
+            if ~l(6), legendIndices = [legendIndices 6]; l(6)=1; end
 
             plot(x,y,'p','LineWidth',2,'MarkerEdgeColor',colornode,...
                 'MarkerFaceColor',colornode,...
@@ -1853,15 +1844,12 @@ function [axesid] = ENplotB(handles,varargin)
     legendString{1}= char('Junctions');
 
     % Legend Plots
-    u=1;
-    for i=1:length(h)
-        if h(i)~=0
-            String{u} = legendString{i};
-            hh(:,u) = h(i);
-            u=u+1;
-        end
+    if isempty(highlightnodeindex) || isempty(highlightnodeindex)
+        legendString={'Pipes','Pumps','Valves',...
+            'Junctions','Reservoirs','Tanks'}; 
+        legendIndices=sort(legendIndices,'descend');
+        legend(h(legendIndices),legendString(legendIndices));
     end
-    legend(hh,String);
     delete(h(:,1));
     % Axis OFF and se Background
     [xmax,~]=max(handles.B.NodeCoordinates{1});
@@ -1915,7 +1903,12 @@ function LoadData_Callback(hObject, eventdata, handles)
             if i>2
                 if get(handles.s1,'Value')%Age
                     xtick = [10 25 40 60 85];
-                    DataValues=0;return;
+                    DataValues=0;
+                    if strcmpi(get(handles.s1,'enable'),'inactive')
+                        return
+                    else
+                        warndlg('No WATER AGE data.','Load Data');return;
+                    end
                 elseif get(handles.s2,'Value')%Chlorine
                     xtick = [0.25 0.5 0.75 1 1.2];
                     DataValues=str2num(a{5});
@@ -1924,7 +1917,12 @@ function LoadData_Callback(hObject, eventdata, handles)
                     xtick = [0 30 60 80 100];
                 elseif get(handles.s4,'Value')%TOC
                     xtick = [0.5 1 2 2.5 3];
-                    DataValues=0;return;
+                    DataValues=0;
+                    if strcmpi(get(handles.s1,'enable'),'inactive')
+                        return
+                    else
+                        warndlg('No TOC data.','Load Data');return;
+                    end
                 end
                 handles.x(i)=str2num(a{2});
                 handles.y(i)=str2num(a{3});
