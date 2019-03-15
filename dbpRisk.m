@@ -183,7 +183,7 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
         % Load Input File
         B=epanet(InputFile); %clc;
         handles.B = B;
-        if B.errcode~=0 
+        if B.Errcode~=0 
             s = sprintf('Could not open network ''%s'', please insert the correct filename(*.inp).\n',InputFile); 
             set(handles.LoadText,'String',s);
             set(handles.LoadInpFile,'str','Load Input File','backg',col);
@@ -202,7 +202,7 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
         if ~isempty(findobj('Tag','Colorbar')),delete(findobj('Tag','Colorbar'));end
         if ~isempty(findobj('Tag','legend')),delete(findobj('Tag','legend'));end
         handles.msg=['>>Load Input File "',InputFile,'" Successful.'];
-        Gethandles.msg=['>>Current version of EPANET:',num2str(B.version)];
+        Gethandles.msg=['>>Current version of EPANET:',num2str(B.Version)];
         handles.msg=[handles.msg;{Gethandles.msg}];
         set(handles.LoadText,'Value',length(handles.msg)); 
         set(handles.LoadText,'String',handles.msg);
@@ -241,11 +241,11 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
         set(handles.flowUnits,'visible','on');
         set(handles.flowUnits,'string',['Flow Units: ',char(handles.B.LinkFlowUnits)]);
 
-        handles.B.msx(['Simulator.msx']); clc;
-        set(handles.s1,'String',handles.B.MsxSpeciesNameID(1));
-        set(handles.s2,'String',handles.B.MsxSpeciesNameID(2));
-        set(handles.s3,'String',handles.B.MsxSpeciesNameID(3));
-        set(handles.s4,'String',handles.B.MsxSpeciesNameID(4));
+        handles.B.loadMSXFile(['Simulator.msx']); clc;
+        set(handles.s1,'String',handles.B.MSXSpeciesNameID(1));
+        set(handles.s2,'String',handles.B.MSXSpeciesNameID(2));
+        set(handles.s3,'String',handles.B.MSXSpeciesNameID(3));
+        set(handles.s4,'String',handles.B.MSXSpeciesNameID(4));
         set(handles.hide,'visible','off');
 
         handles.Count=1;
@@ -941,7 +941,7 @@ function Run_Callback(hObject, eventdata, handles)
         handles.B.NodeCount=double(B.NodeCount);
         % Obtain a MSX step-wise quality solution
         B.MsxInitializeQualityAnalysis(0);
-        while(tleft>0 && B.errcode==0)
+        while(tleft>0 && B.Errcode==0)
             [t, tleft]=B.MsxStepQualityAnalysisTimeLeft();
             for i=1:(B.NodeCount)
                 if k==2
@@ -979,7 +979,7 @@ function Run_Callback(hObject, eventdata, handles)
         % Obtain a MSX step-wise quality solution
         B.MsxInitializeQualityAnalysis(0);
         handles.B.LinkCount=double(B.LinkCount);
-        while(tleft>0 && B.errcode==0)
+        while(tleft>0 && B.Errcode==0)
             [t, tleft]=B.MsxStepQualityAnalysisTimeLeft();
             if tleft~=0, handles.Time(k)=t; end   
             for i=1:B.LinkCount
@@ -1397,7 +1397,7 @@ function handles=colorM(hObject, eventdata, handles,el)
     end
     set(handles.Tbar,'visible','on');
     set(handles.Tbar,'String',pp);
-    str=char(handles.B.MsxSpeciesNameID(handles.speciesInd(1)));
+    str=char(handles.B.MSXSpeciesNameID(handles.speciesInd(1)));
     y=['>>',str,' Selected'];
     set(handles.cbar,'position',[0.02 .94 0.4 0.03]);
     set(handles.cbar,'XTickLabel',regexp(num2str(xtick), '\s*','split'));
@@ -1746,13 +1746,13 @@ function [axesid] = ENplotB(handles,varargin)
         r{i}=find(a==1);
 
         if length(hh) && ~isempty(selectColorNode)
-            if handles.B.NodeBaseDemands(i)==0 && (abs(sum(Flow(r{i})))>0.001)==0
+            if handles.B.NodeBaseDemands{1}(i)==0 && (abs(sum(Flow(r{i})))>0.001)==0
                 plot(x, y,'.','Color',[.5 .5 .5],'Parent',axesid);%only for dbpRisk
                 gof=1;
             end
         end
         
-        if handles.B.NodeBaseDemands(i)~=0 && length(hh) && (abs(sum(Flow(r{i})))>0.001)==0
+        if handles.B.NodeBaseDemands{1}(i)~=0 && length(hh) && (abs(sum(Flow(r{i})))>0.001)==0
             h(:,4)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
                 'MarkerFaceColor','b',...
                 'MarkerSize',5,'Parent',axesid);
@@ -1823,7 +1823,7 @@ function [axesid] = ENplotB(handles,varargin)
                     nm=selectColorNode(hh);
                 end
                 if iscell(nm{1}) 
-                    if handles.B.NodeBaseDemands(i)~=0 && sum(round(Flow(r{i})))~=0
+                    if handles.B.NodeBaseDemands{1}(i)~=0 && sum(round(Flow(r{i})))~=0
                         plot(x, y,'o','LineWidth',2,'MarkerEdgeColor',nm{1}{1},'MarkerFaceColor',nm{1}{1},'MarkerSize',10,'Parent',axesid);
                     end
                 else

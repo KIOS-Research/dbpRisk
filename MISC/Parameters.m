@@ -113,7 +113,7 @@ handles.ReservoirTableCount=0;
 handles.TankTableCount=0;
 handles.PatternTCount=0;
 
-handles.Init=handles.Ps.B.getMsxParametersPipesValue{1};
+handles.Init=handles.Ps.B.getMSXParametersPipesValue{1};
 
 handles.P=DefaultParameters(handles);
 SetGui(hObject, eventdata, handles);
@@ -132,30 +132,30 @@ function [P]=DefaultParameters(handles)
     P.BaseDemand=handles.Ps.B.NodeBaseDemands;
     P.Patterns=handles.Ps.B.getPattern;
     for i=1:handles.Ps.B.LinkCount
-        for u=1:handles.Ps.B.MsxSpeciesCount
-            P.QualityLink(u,i)=handles.Ps.B.MsxLinkInitqualValue{i}(u);
+        for u=1:handles.Ps.B.MSXSpeciesCount
+            P.QualityLink(u,i)=handles.Ps.B.MSXLinkInitqualValue{i}(u);
         end
     end
     for i=1:handles.Ps.B.NodeCount
         k=2;
-        for u=1:handles.Ps.B.MsxSpeciesCount-1
-            P.QualityNode(u,i)=handles.Ps.B.MsxNodeInitqualValue{i}(k);
+        for u=1:handles.Ps.B.MSXSpeciesCount-1
+            P.QualityNode(u,i)=handles.Ps.B.MSXNodeInitqualValue{i}(k);
             k=k+1;
         end
     end
     P.QualityNodeRes=P.QualityNode(:,handles.Ps.B.NodeReservoirIndex)';
     P.QualityNodeTank=P.QualityNode(:,handles.Ps.B.NodeTankIndex)';
 
-    v=handles.Ps.B.getMsxParametersPipesValue;
+    v=handles.Ps.B.getMSXParametersPipesValue;
     for i=1:handles.Ps.B.LinkPipeCount
-        for u=1:handles.Ps.B.MsxParametersCount
+        for u=1:handles.Ps.B.MSXParametersCount
             P.Coeff(u,i)=v{i}(u);
         end
     end
-    v2=handles.Ps.B.getMsxParametersTanksValue;
+    v2=handles.Ps.B.getMSXParametersTanksValue;
     for k=handles.Ps.B.NodeTankIndex
         i=i+1;
-        for u=1:handles.Ps.B.MsxParametersCount
+        for u=1:handles.Ps.B.MSXParametersCount
             P.Coeff(u,i)=v2{k}(u);
         end
     end
@@ -169,8 +169,8 @@ function [P]=DefaultParameters(handles)
     P.FlowSamples={1,1,1,1,1,1};
     
     t=7;
-    for i=1:handles.Ps.B.MsxParametersCount
-        P.FlowParameters{t}=handles.Ps.B.MsxParametersNameID{i};
+    for i=1:handles.Ps.B.MSXParametersCount
+        P.FlowParameters{t}=handles.Ps.B.MSXParametersNameID{i};
         P.FlowValues{t}=P.Coeff(i,:);
         P.FlowPrc{t}=0;
         P.FlowSamples{t}=1;
@@ -850,7 +850,7 @@ set(handles.textp3,'Visible','off');
     NodeTableColumnName(1,1:handles.Ps.B.NodeCount)=handles.Ps.B.NodeNameID;
     set(handles.Table, 'RowName', NodeTableColumnName);
     Elevations=['Elevations(',handles.Ps.B.NodeElevationUnits,')'];
-    Basedemands=['Basedemands(',handles.Ps.B.LinkFlowUnits{1},')'];
+    Basedemands=['Basedemands(',handles.Ps.B.LinkFlowUnits,')'];
     set(handles.Table,'ColumnName',{Elevations,Basedemands}); 
    
     % Nodes
@@ -875,7 +875,7 @@ set(handles.textp3,'Visible','off');
         handles.NodeTable=zeros(handles.Ps.B.NodeCount,2);
         handles.NodeTable(1:end,1)=handles.P.Elevation;
         % Basedemands
-        handles.NodeTable(1:end,2)=handles.P.BaseDemand;  
+        handles.NodeTable(1:end,2)=handles.P.BaseDemand{1};  
         set(handles.Table,'data',handles.NodeTable);
         set(handles.parameterV1,'String',0); %ELEVATION
         set(handles.parameterS1,'String',1);
