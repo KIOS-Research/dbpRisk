@@ -1677,7 +1677,7 @@ function [axesid] = ENplotB(handles,varargin)
             end
             h(:,2)=plot((x1+x2)/2,(y1+y2)/2,'mv','LineWidth',2,'MarkerEdgeColor','m',...
                 'MarkerFaceColor','m',...
-                'MarkerSize',5,'Parent',axesid);
+                'MarkerSize',2,'Parent',axesid);
             if ~l(2), legendIndices = [legendIndices 2]; l(2)=1; end
             plot((x1+x2)/2,(y1+y2)/2,'mv','LineWidth',2,'MarkerEdgeColor',colornode,...
                 'MarkerFaceColor',colornode,...
@@ -1755,14 +1755,14 @@ function [axesid] = ENplotB(handles,varargin)
         if handles.B.NodeBaseDemands{1}(i)~=0 && length(hh) && (abs(sum(Flow(r{i})))>0.001)==0
             h(:,4)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
                 'MarkerFaceColor','b',...
-                'MarkerSize',5,'Parent',axesid);
+                'MarkerSize',2,'Parent',axesid);
             if ~l(4), legendIndices = [legendIndices 4]; l(4)=1; end
             legendString{1}= char('Junctions');
         end
         if ~length(hh)
             h(:,4)=plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','b',...
                 'MarkerFaceColor','b',...
-                'MarkerSize',5,'Parent',axesid);
+                'MarkerSize',2,'Parent',axesid);
             legendString{1}= char('Junctions');
         end
         % Plot Reservoirs
@@ -1773,11 +1773,11 @@ function [axesid] = ENplotB(handles,varargin)
             end
             h(:,5)=plot(x,y,'s','LineWidth',2,'MarkerEdgeColor','g',...
                 'MarkerFaceColor','g',...
-                'MarkerSize',13,'Parent',axesid);
+                'MarkerSize',10,'Parent',axesid);
             if ~l(5), legendIndices = [legendIndices 5]; l(5)=1; end
             plot(x,y,'s','LineWidth',2,'MarkerEdgeColor', colornode,...
                 'MarkerFaceColor', colornode,...
-                'MarkerSize',13,'Parent',axesid);
+                'MarkerSize',10,'Parent',axesid);
             legendString{2} = char('Reservoirs');
         end
         % Plot Tanks
@@ -1790,12 +1790,12 @@ function [axesid] = ENplotB(handles,varargin)
             end
             h(:,6)=plot(x,y,'p','LineWidth',2,'MarkerEdgeColor','c',...
                 'MarkerFaceColor','c',...
-                'MarkerSize',16,'Parent',axesid);
+                'MarkerSize',13,'Parent',axesid);
             if ~l(6), legendIndices = [legendIndices 6]; l(6)=1; end
 
             plot(x,y,'p','LineWidth',2,'MarkerEdgeColor',colornode,...
                 'MarkerFaceColor',colornode,...
-                'MarkerSize',16,'Parent',axesid);
+                'MarkerSize',13,'Parent',axesid);
 
             legendString{3} = char('Tanks');
         end
@@ -1808,7 +1808,7 @@ function [axesid] = ENplotB(handles,varargin)
         if length(hh) && isempty(selectColorNode)
             plot(x, y,'o','LineWidth',2,'MarkerEdgeColor','r',...
                 'MarkerFaceColor','r',...
-                'MarkerSize',10,'Parent',axesid);
+                'MarkerSize',2,'Parent',axesid);
             text(x,y,handles.B.NodeNameID(i),'Fontsize',fontsize,'Parent',axesid);%'BackgroundColor',[.7 .9 .7],'Margin',margin/4);
         elseif length(hh) && ~isempty(selectColorNode)
             try 
@@ -1824,14 +1824,14 @@ function [axesid] = ENplotB(handles,varargin)
                 end
                 if iscell(nm{1}) 
                     if handles.B.NodeBaseDemands{1}(i)~=0 && sum(round(Flow(r{i})))~=0
-                        plot(x, y,'o','LineWidth',2,'MarkerEdgeColor',nm{1}{1},'MarkerFaceColor',nm{1}{1},'MarkerSize',10,'Parent',axesid);
+                        plot(x, y,'o','LineWidth',2,'MarkerEdgeColor',nm{1}{1},'MarkerFaceColor',nm{1}{1},'MarkerSize',2,'Parent',axesid);
                     end
                 else
-                    plot(x, y,'o','LineWidth',2,'MarkerEdgeColor',nm{1},'MarkerFaceColor',nm{1},'MarkerSize',10,'Parent',axesid);
+                    plot(x, y,'o','LineWidth',2,'MarkerEdgeColor',nm{1},'MarkerFaceColor',nm{1},'MarkerSize',2,'Parent',axesid);
                 end
            elseif gof==0
                 plot(x, y,'o','LineWidth',2,'MarkerEdgeColor',char(selectColorNode(hh)),'MarkerFaceColor',char(selectColorNode(hh)),...
-                'MarkerSize',10,'Parent',axesid);               
+                'MarkerSize',2,'Parent',axesid);               
            end
     %         text(x,y,handles.B.NodeNameID(i),'Fontsize',fontsize)%'BackgroundColor',[.7 .9 .7],'Margin',margin/4);
         end
@@ -1840,7 +1840,7 @@ function [axesid] = ENplotB(handles,varargin)
 
     h(:,1)=plot(x,y,'o','LineWidth',2,'MarkerEdgeColor','b',...
     'MarkerFaceColor','b',...
-    'MarkerSize',5,'Parent',axesid);
+    'MarkerSize',2,'Parent',axesid);
     legendString{1}= char('Junctions');
 
     % Legend Plots
