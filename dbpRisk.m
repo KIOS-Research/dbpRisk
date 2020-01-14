@@ -190,8 +190,8 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
             return
         end
 
-        if exist([pwd,'\RESULTS\','temp2.msx'])==2
-            delete([pwd,'\RESULTS\','temp2.msx']);
+        if exist([pwd,'\RESULTS\','temp2.MSX'])==2
+            delete([pwd,'\RESULTS\','temp2.MSX']);
         end
         if exist([pwd,'\RESULTS\','temp2.inp'])==2
             delete([pwd,'\RESULTS\','temp2.inp']);
@@ -241,7 +241,7 @@ function LoadInpFile_Callback(hObject, eventdata, handles)
         set(handles.flowUnits,'visible','on');
         set(handles.flowUnits,'string',['Flow Units: ',char(handles.B.LinkFlowUnits)]);
 
-        handles.B.loadMSXFile(['Simulator.msx']); clc;
+        handles.B.loadMSXFile(['Simulator.MSX']); clc;
         set(handles.s1,'String',handles.B.MSXSpeciesNameID(1));
         set(handles.s2,'String',handles.B.MSXSpeciesNameID(2));
         set(handles.s3,'String',handles.B.MSXSpeciesNameID(3));
@@ -835,7 +835,7 @@ function Run_Callback(hObject, eventdata, handles)
         B.setLinkLength(P.FlowParamScenarios{2}(:, 1)');
         B.setLinkRoughnessCoeff(P.FlowParamScenarios{3}(:,1)');
         B.setNodeElevations(P.FlowParamScenarios{4}(:, 1)');
-        B.setNodeBaseDemands(P.FlowParamScenarios{5}(:, 1)');
+        B.setNodeBaseDemands({P.FlowParamScenarios{5}(:, 1)'});
         if ~isempty(P.FlowValues{6})
             if size(P.Patterns,1)==1
                 B.setPatternMatrix(P.FlowParamScenarios{6}(:,1)');
@@ -844,7 +844,7 @@ function Run_Callback(hObject, eventdata, handles)
             end
         end
         
-        values1=B.getMsxNodeInitqualValue;
+        values1=B.getMSXNodeInitqualValue;
         % Reservoirs
         u=1;
         for k=B.NodeReservoirIndex
@@ -871,15 +871,15 @@ function Run_Callback(hObject, eventdata, handles)
 %             end
             u=u+1;
         end
-        B.setMsxNodeInitqualValue(values1);
+        B.setMSXNodeInitqualValue(values1);
 
-        values2=B.getMsxParametersPipesValue;
+        values2=B.getMSXParametersPipesValue;
         for p=1:B.LinkCount
         t=7;
             if p<B.LinkPipeCount || p==B.LinkPipeCount
-                for u=1:B.MsxParametersCount
+                for u=1:B.MSXParametersCount
                     values2{p}(u)=P.FlowParamScenarios{t}(u)';
-                    B.setMsxParametersPipesValue(p,values2{p});
+                    B.setMSXParametersPipesValue(p,values2{p});
                     t=t+1;
                 end
             end
@@ -887,9 +887,9 @@ function Run_Callback(hObject, eventdata, handles)
 
         for p=B.LinkPipeCount+1:B.NodeTankCount+handles.B.LinkPipeCount
             t=7;
-            for u=1:B.MsxParametersCount
+            for u=1:B.MSXParametersCount
                 values2{p}(u)=P.FlowParamScenarios{7}(u)';
-                B.setMsxParametersTanksValue(i,values2{p});
+                B.setMSXParametersTanksValue(i,values2{p});
                 t=t+1;
             end
         end
@@ -920,7 +920,7 @@ function Run_Callback(hObject, eventdata, handles)
     B.saveInputFile('temp2.inp');
     copyfile('temp2.inp',[pwd,'\RESULTS\temp.inp']);
     movefile('temp2.inp',[pwd,'\RESULTS\temp2.inp']);
-    B.LoadInpFile([pwd,'\RESULTS\temp.inp'],[pwd,'\RESULTS\temp.txt'], [pwd,'\RESULTS\temp.out']);
+    B.loadEPANETFile([pwd,'\RESULTS\temp.inp'],[pwd,'\RESULTS\temp.txt'], [pwd,'\RESULTS\temp.out']);
     %profile on
     CompQualityNodesAge=0;
     CompQualityNodesTHMs=0;
@@ -933,40 +933,40 @@ function Run_Callback(hObject, eventdata, handles)
 
     format long g;%tic
 
-    B.MsxSolveCompleteHydraulics();
+    B.solveMSXCompleteHydraulics();
     handles.Progress_Percentage=0.0;
     h=waitbar(0,['Initializing waitbar ',num2str(0),'%'],'Name','Running...');
     if B.NodeCount>B.LinkCount || B.NodeCount==B.LinkCount
         k=2;tleft=1;
         handles.B.NodeCount=double(B.NodeCount);
         % Obtain a MSX step-wise quality solution
-        B.MsxInitializeQualityAnalysis(0);
+        B.initializeMSXQualityAnalysis(0);
         while(tleft>0 && B.Errcode==0)
-            [t, tleft]=B.MsxStepQualityAnalysisTimeLeft();
+            [t, tleft]=B.stepMSXQualityAnalysisTimeLeft();
             for i=1:(B.NodeCount)
                 if k==2
-                    CompQualityNodesAge(1,i)=B.MsxNodeInitqualValue{i}(1);%age
-                    CompQualityNodesChlorine(1,i)=B.MsxNodeInitqualValue{i}(2);%chlorine
-                    CompQualityNodesTHMs(1,i)=B.MsxNodeInitqualValue{i}(3);%thms
-                    CompQualityNodesTOC(1,i)=B.MsxNodeInitqualValue{i}(4);%TOC
+                    CompQualityNodesAge(1,i)=B.MSXNodeInitqualValue{i}(1);%age
+                    CompQualityNodesChlorine(1,i)=B.MSXNodeInitqualValue{i}(2);%chlorine
+                    CompQualityNodesTHMs(1,i)=B.MSXNodeInitqualValue{i}(3);%thms
+                    CompQualityNodesTOC(1,i)=B.MSXNodeInitqualValue{i}(4);%TOC
                     if i<B.LinkCount+1
-                        CompQualityLinksAge(1,i)=B.MsxLinkInitqualValue{i}(1);%age
-                        CompQualityLinksChlorine(1,i)=B.MsxLinkInitqualValue{i}(2);%chlorine            
-                        CompQualityLinksTHMs(1,i)=B.MsxLinkInitqualValue{i}(3);%thms   
-                        CompQualityLinksTOC(1,i)=B.MsxLinkInitqualValue{i}(4);%TOC
+                        CompQualityLinksAge(1,i)=B.MSXLinkInitqualValue{i}(1);%age
+                        CompQualityLinksChlorine(1,i)=B.MSXLinkInitqualValue{i}(2);%chlorine            
+                        CompQualityLinksTHMs(1,i)=B.MSXLinkInitqualValue{i}(3);%thms   
+                        CompQualityLinksTOC(1,i)=B.MSXLinkInitqualValue{i}(4);%TOC
                     end
                 end
 
                 handles.Time(k)=t; %end
-                CompQualityNodesAge(k,i)=B.getMsxSpeciesConcentration(0,i,1);  
-                CompQualityNodesChlorine(k,i)=B.getMsxSpeciesConcentration(0,i,2);  
-                CompQualityNodesTHMs(k,i)=B.getMsxSpeciesConcentration(0,i,3);  
-                CompQualityNodesTOC(k,i)=B.getMsxSpeciesConcentration(0,i,4);  
+                CompQualityNodesAge(k,i)=B.getMSXSpeciesConcentration(0,i,1);  
+                CompQualityNodesChlorine(k,i)=B.getMSXSpeciesConcentration(0,i,2);  
+                CompQualityNodesTHMs(k,i)=B.getMSXSpeciesConcentration(0,i,3);  
+                CompQualityNodesTOC(k,i)=B.getMSXSpeciesConcentration(0,i,4);  
                 if i<B.LinkCount+1
-                    CompQualityLinksAge(k,i)=B.getMsxSpeciesConcentration(1,i,1);  
-                    CompQualityLinksChlorine(k,i)=B.getMsxSpeciesConcentration(1,i,2);  
-                    CompQualityLinksTHMs(k,i)=B.getMsxSpeciesConcentration(1,i,3);  
-                    CompQualityLinksTOC(k,i)=B.getMsxSpeciesConcentration(1,i,4);  
+                    CompQualityLinksAge(k,i)=B.getMSXSpeciesConcentration(1,i,1);  
+                    CompQualityLinksChlorine(k,i)=B.getMSXSpeciesConcentration(1,i,2);  
+                    CompQualityLinksTHMs(k,i)=B.getMSXSpeciesConcentration(1,i,3);  
+                    CompQualityLinksTOC(k,i)=B.getMSXSpeciesConcentration(1,i,4);  
                 end
             end
             handles.Progress_Percentage=(k*handles.B.NodeCount)/((P.EndTime*3600/3600)*handles.B.NodeCount);
@@ -977,33 +977,33 @@ function Run_Callback(hObject, eventdata, handles)
     elseif B.NodeCount<B.LinkCount 
         k=2;tleft=1;
         % Obtain a MSX step-wise quality solution
-        B.MsxInitializeQualityAnalysis(0);
+        B.initializeMSXQualityAnalysis(0);
         handles.B.LinkCount=double(B.LinkCount);
         while(tleft>0 && B.Errcode==0)
-            [t, tleft]=B.MsxStepQualityAnalysisTimeLeft();
+            [t, tleft]=B.stepMSXQualityAnalysisTimeLeft();
             if tleft~=0, handles.Time(k)=t; end   
             for i=1:B.LinkCount
                 if k==2
-                    CompQualityLinksAge(1,i)=B.MsxLinkInitqualValue{i}(1);%age
-                    CompQualityLinksChlorine(1,i)=B.MsxLinkInitqualValue{i}(2);%chlorine            
-                    CompQualityLinksTHMs(1,i)=B.MsxLinkInitqualValue{i}(3);%thms   
-                    CompQualityLinksTOC(1,i)=B.MsxLinkInitqualValue{i}(4);%TOC
+                    CompQualityLinksAge(1,i)=B.MSXLinkInitqualValue{i}(1);%age
+                    CompQualityLinksChlorine(1,i)=B.MSXLinkInitqualValue{i}(2);%chlorine            
+                    CompQualityLinksTHMs(1,i)=B.MSXLinkInitqualValue{i}(3);%thms   
+                    CompQualityLinksTOC(1,i)=B.MSXLinkInitqualValue{i}(4);%TOC
                     if i<B.NodeCount+1
-                        CompQualityNodesAge(1,i)=B.MsxNodeInitqualValue{i}(1);%age
-                        CompQualityNodesChlorine(1,i)=B.MsxNodeInitqualValue{i}(2);%chlorine
-                        CompQualityNodesTHMs(1,i)=B.MsxNodeInitqualValue{i}(3);%thms
-                        CompQualityNodesTOC(1,i)=B.MsxNodeInitqualValue{i}(4);%TOC
+                        CompQualityNodesAge(1,i)=B.MSXNodeInitqualValue{i}(1);%age
+                        CompQualityNodesChlorine(1,i)=B.MSXNodeInitqualValue{i}(2);%chlorine
+                        CompQualityNodesTHMs(1,i)=B.MSXNodeInitqualValue{i}(3);%thms
+                        CompQualityNodesTOC(1,i)=B.MSXNodeInitqualValue{i}(4);%TOC
                     end
                 end
-                CompQualityLinksAge(k,i)=B.getMsxSpeciesConcentration(1,i,1);  
-                CompQualityLinksChlorine(k,i)=B.getMsxSpeciesConcentration(1,i,2);  
-                CompQualityLinksTHMs(k,i)=B.getMsxSpeciesConcentration(1,i,3);  
-                CompQualityLinksTOC(k,i)=B.getMsxSpeciesConcentration(1,i,4);  
+                CompQualityLinksAge(k,i)=B.getMSXSpeciesConcentration(1,i,1);  
+                CompQualityLinksChlorine(k,i)=B.getMSXSpeciesConcentration(1,i,2);  
+                CompQualityLinksTHMs(k,i)=B.getMSXSpeciesConcentration(1,i,3);  
+                CompQualityLinksTOC(k,i)=B.getMSXSpeciesConcentration(1,i,4);  
                 if i<B.NodeCount+1  
-                    CompQualityNodesAge(k,i)=B.getMsxSpeciesConcentration(0,i,1);  
-                    CompQualityNodesChlorine(k,i)=B.getMsxSpeciesConcentration(0,i,2);  
-                    CompQualityNodesTHMs(k,i)=B.getMsxSpeciesConcentration(0,i,3);  
-                    CompQualityNodesTOC(k,i)=B.getMsxSpeciesConcentration(0,i,4); 
+                    CompQualityNodesAge(k,i)=B.getMSXSpeciesConcentration(0,i,1);  
+                    CompQualityNodesChlorine(k,i)=B.getMSXSpeciesConcentration(0,i,2);  
+                    CompQualityNodesTHMs(k,i)=B.getMSXSpeciesConcentration(0,i,3);  
+                    CompQualityNodesTOC(k,i)=B.getMSXSpeciesConcentration(0,i,4); 
                 end
             end
             handles.Progress_Percentage=(k*handles.B.LinkCount)/((P.EndTime*3600/3600)*handles.B.LinkCount);
@@ -1180,28 +1180,28 @@ function handles=colorM(hObject, eventdata, handles,el)
         handles.waitbar=h;
     end
     if get(handles.s1,'Value')%Age
-        handles.MsxResultsMaxNode=handles.CompQualityNodesAgeMax;
-        handles.MsxResultsAverageNode=handles.CompQualityNodesAgeAverage;
-        handles.MsxResultsAverageLink=handles.CompQualityLinksAgeAverage;    
+        handles.MSXResultsMaxNode=handles.CompQualityNodesAgeMax;
+        handles.MSXResultsAverageNode=handles.CompQualityNodesAgeAverage;
+        handles.MSXResultsAverageLink=handles.CompQualityLinksAgeAverage;    
         xtick = [10 25 40 60 85];
     elseif get(handles.s2,'Value')%Chlorine
-        handles.MsxResultsMaxNode=handles.CompQualityNodesChlorineMax;
-        handles.MsxResultsAverageNode=handles.CompQualityNodesChlorineAverage;
-        handles.MsxResultsAverageLink=handles.CompQualityLinksChlorineAverage;
+        handles.MSXResultsMaxNode=handles.CompQualityNodesChlorineMax;
+        handles.MSXResultsAverageNode=handles.CompQualityNodesChlorineAverage;
+        handles.MSXResultsAverageLink=handles.CompQualityLinksChlorineAverage;
         xtick = [0.25 0.5 0.75 1 1.2];
     elseif get(handles.s3,'Value')%THMs
-        handles.MsxResultsMaxNode=handles.CompQualityNodesTHMsMax;
-        handles.MsxResultsAverageNode=handles.CompQualityNodesTHMsAverage;
-        handles.MsxResultsAverageLink=handles.CompQualityLinksTHMsAverage;
+        handles.MSXResultsMaxNode=handles.CompQualityNodesTHMsMax;
+        handles.MSXResultsAverageNode=handles.CompQualityNodesTHMsAverage;
+        handles.MSXResultsAverageLink=handles.CompQualityLinksTHMsAverage;
         xtick = [0 30 60 80 100];
     elseif get(handles.s4,'Value')%TOC
-        handles.MsxResultsMaxNode=handles.CompQualityNodesTOCMax;
-        handles.MsxResultsAverageNode=handles.CompQualityNodesTOCAverage;
-        handles.MsxResultsAverageLink=handles.CompQualityLinksTOCAverage;    
+        handles.MSXResultsMaxNode=handles.CompQualityNodesTOCMax;
+        handles.MSXResultsAverageNode=handles.CompQualityNodesTOCAverage;
+        handles.MSXResultsAverageLink=handles.CompQualityLinksTOCAverage;    
         xtick = [0.5 1 2 2.5 3];
     end
 
-%     xtick = round([1: floor(max(handles.MsxResultsAverageNode)/4) : max(handles.MsxResultsAverageNode)]);
+%     xtick = round([1: floor(max(handles.MSXResultsAverageNode)/4) : max(handles.MSXResultsAverageNode)]);
 %     %     xtick = [1 30 45 60 80 100];
 %     if length(xtick)==4
 %         xtick=[xtick xtick(length(xtick))+(xtick(length(xtick)-1)-xtick(length(xtick)-2))];
@@ -1226,23 +1226,23 @@ function handles=colorM(hObject, eventdata, handles,el)
     
     if handles.B.NodeCount>handles.B.LinkCount || handles.B.NodeCount==handles.B.LinkCount
         for i=1:handles.B.NodeCount
-            if handles.MsxResultsAverageNode(i)<xtick(2) 
+            if handles.MSXResultsAverageNode(i)<xtick(2) 
                 handles.Colorb{i}='b';
                 handles.IDb(i)=handles.B.NodeNameID(i);
                 handles.indb=handles.indb+1;
-            elseif xtick(2)<handles.MsxResultsAverageNode(i) && handles.MsxResultsAverageNode(i)<xtick(3) 
+            elseif xtick(2)<handles.MSXResultsAverageNode(i) && handles.MSXResultsAverageNode(i)<xtick(3) 
                 handles.Colorc{i}='c';
                 handles.IDc(i)=handles.B.NodeNameID(i);
                 handles.indc=handles.indc+1;
-            elseif xtick(3)<handles.MsxResultsAverageNode(i) && handles.MsxResultsAverageNode(i)<xtick(4) 
+            elseif xtick(3)<handles.MSXResultsAverageNode(i) && handles.MSXResultsAverageNode(i)<xtick(4) 
                 handles.Colorg{i}='g';
                 handles.IDg(i)=handles.B.NodeNameID(i);
                 handles.indg=handles.indg+1;
-            elseif xtick(4)<handles.MsxResultsAverageNode(i) && handles.MsxResultsAverageNode(i)<xtick(5) 
+            elseif xtick(4)<handles.MSXResultsAverageNode(i) && handles.MSXResultsAverageNode(i)<xtick(5) 
                 handles.Colorcc{i}=[1 .5 0];
                 handles.IDcc(i)=handles.B.NodeNameID(i);
                 handles.indcc=handles.indcc+1;
-            elseif xtick(5)<handles.MsxResultsAverageNode(i) 
+            elseif xtick(5)<handles.MSXResultsAverageNode(i) 
                 handles.Coloraa{i}='r'; 
                 handles.IDaa(i)=handles.B.NodeNameID(i);
                 handles.indaa=handles.indaa+1;
@@ -1257,23 +1257,23 @@ function handles=colorM(hObject, eventdata, handles,el)
             end
 
             if i<handles.B.LinkCount || i==handles.B.LinkCount
-                if handles.MsxResultsAverageLink(i)<xtick(2) 
+                if handles.MSXResultsAverageLink(i)<xtick(2) 
                     handles.Colorbl{i}='b';
                     handles.IDbl(i)=handles.B.LinkNameID(i);
                     handles.indbl=handles.indbl+1;
-                elseif xtick(2)<handles.MsxResultsAverageLink(i) && handles.MsxResultsAverageLink(i)<xtick(3) 
+                elseif xtick(2)<handles.MSXResultsAverageLink(i) && handles.MSXResultsAverageLink(i)<xtick(3) 
                     handles.Colorcl{i}='c';
                     handles.IDcl(i)=handles.B.LinkNameID(i);
                     handles.indcl=handles.indcl+1;
-                elseif xtick(3)<handles.MsxResultsAverageLink(i) && handles.MsxResultsAverageLink(i)<xtick(4) 
+                elseif xtick(3)<handles.MSXResultsAverageLink(i) && handles.MSXResultsAverageLink(i)<xtick(4) 
                     handles.Colorgl{i}='g';
                     handles.IDgl(i)=handles.B.LinkNameID(i);
                     handles.indgl=handles.indgl+1;
-                elseif xtick(4)<handles.MsxResultsAverageLink(i) && handles.MsxResultsAverageLink(i)<xtick(5) 
+                elseif xtick(4)<handles.MSXResultsAverageLink(i) && handles.MSXResultsAverageLink(i)<xtick(5) 
                     handles.Colorccl{i}=[1 .5 0];
                     handles.IDccl(i)=handles.B.LinkNameID(i);
                     handles.indccl=handles.indccl+1;
-                elseif xtick(5)<handles.MsxResultsAverageLink(i) 
+                elseif xtick(5)<handles.MSXResultsAverageLink(i) 
                     handles.Coloraal{i}='r'; 
                     handles.IDaal(i)=handles.B.LinkNameID(i);
                     handles.indaal=handles.indaal+1;
@@ -1291,23 +1291,23 @@ function handles=colorM(hObject, eventdata, handles,el)
         end
     elseif handles.B.NodeCount<handles.B.LinkCount 
         for i=1:handles.B.LinkCount
-            if handles.MsxResultsAverageLink(i)<xtick(2) 
+            if handles.MSXResultsAverageLink(i)<xtick(2) 
                 handles.Colorbl{i}='b';
                 handles.IDbl(i)=handles.B.LinkNameID(i);
                 handles.indbl=handles.indbl+1;
-            elseif xtick(2)<handles.MsxResultsAverageLink(i) && handles.MsxResultsAverageLink(i)<xtick(3) 
+            elseif xtick(2)<handles.MSXResultsAverageLink(i) && handles.MSXResultsAverageLink(i)<xtick(3) 
                 handles.Colorcl{i}='c';
                 handles.IDcl(i)=handles.B.LinkNameID(i);
                 handles.indcl=handles.indcl+1;
-            elseif xtick(3)<handles.MsxResultsAverageLink(i) && handles.MsxResultsAverageLink(i)<xtick(4) 
+            elseif xtick(3)<handles.MSXResultsAverageLink(i) && handles.MSXResultsAverageLink(i)<xtick(4) 
                 handles.Colorgl{i}='g';
                 handles.IDgl(i)=handles.B.LinkNameID(i);
                 handles.indgl=handles.indgl+1;
-            elseif xtick(4)<handles.MsxResultsAverageLink(i) && handles.MsxResultsAverageLink(i)<xtick(5) 
+            elseif xtick(4)<handles.MSXResultsAverageLink(i) && handles.MSXResultsAverageLink(i)<xtick(5) 
                 handles.Colorccl{i}=[1 .5 0];
                 handles.IDccl(i)=handles.B.LinkNameID(i);
                 handles.indccl=handles.indccl+1;
-            elseif xtick(5)<handles.MsxResultsAverageLink(i) 
+            elseif xtick(5)<handles.MSXResultsAverageLink(i) 
                 handles.Coloraal{i}='r'; 
                 handles.IDaal(i)=handles.B.LinkNameID(i);
                 handles.indaal=handles.indaal+1;
@@ -1318,23 +1318,23 @@ function handles=colorM(hObject, eventdata, handles,el)
             end
             
             if i<handles.B.NodeCount || i==handles.B.NodeCount
-                if handles.MsxResultsAverageNode(i)<xtick(2) 
+                if handles.MSXResultsAverageNode(i)<xtick(2) 
                     handles.Colorb{i}='b';
                     handles.IDb(i)=handles.B.NodeNameID(i);
                     handles.indb=handles.indb+1;
-                elseif xtick(2)<handles.MsxResultsAverageNode(i) && handles.MsxResultsAverageNode(i)<xtick(3) 
+                elseif xtick(2)<handles.MSXResultsAverageNode(i) && handles.MSXResultsAverageNode(i)<xtick(3) 
                     handles.Colorc{i}='c';
                     handles.IDc(i)=handles.B.NodeNameID(i);
                     handles.indc=handles.indc+1;
-                elseif xtick(3)<handles.MsxResultsAverageNode(i) && handles.MsxResultsAverageNode(i)<xtick(4) 
+                elseif xtick(3)<handles.MSXResultsAverageNode(i) && handles.MSXResultsAverageNode(i)<xtick(4) 
                     handles.Colorg{i}='g';
                     handles.IDg(i)=handles.B.NodeNameID(i);
                     handles.indg=handles.indg+1;
-                elseif xtick(4)<handles.MsxResultsAverageNode(i) && handles.MsxResultsAverageNode(i)<xtick(5) 
+                elseif xtick(4)<handles.MSXResultsAverageNode(i) && handles.MSXResultsAverageNode(i)<xtick(5) 
                     handles.Colorcc{i}=[1 .5 0];
                     handles.IDcc(i)=handles.B.NodeNameID(i);
                     handles.indcc=handles.indcc+1;
-                elseif xtick(5)<handles.MsxResultsAverageNode(i) 
+                elseif xtick(5)<handles.MSXResultsAverageNode(i) 
                     handles.Coloraa{i}='r'; 
                     handles.IDaa(i)=handles.B.NodeNameID(i);
                     handles.indaa=handles.indaa+1;
@@ -1393,7 +1393,7 @@ function handles=colorM(hObject, eventdata, handles,el)
     if handles.speciesInd==1
         pp='(hrs)';
     else
-        pp=['(',char(handles.B.MsxSpeciesUnits(handles.speciesInd)),'/L)'];
+        pp=['(',char(handles.B.MSXSpeciesUnits(handles.speciesInd)),'/L)'];
     end
     set(handles.Tbar,'visible','on');
     set(handles.Tbar,'String',pp);

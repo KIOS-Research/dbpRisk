@@ -153,32 +153,32 @@ end
 if get(handles.NodesID,'Value')
     if get(handles.s1,'Value')%Age
         handles.vv=handles.Ps.CompQualityNodesAge;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityNodesAgeAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityNodesAgeAverage;
     elseif get(handles.s2,'Value')%Chlorine
         handles.vv=handles.Ps.CompQualityNodesChlorine;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityNodesChlorineAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityNodesChlorineAverage;
     elseif get(handles.s3,'Value')%THMs
         handles.vv=handles.Ps.CompQualityNodesTHMs;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityNodesTHMsAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityNodesTHMsAverage;
     elseif get(handles.s4,'Value')%TOC
         handles.vv=handles.Ps.CompQualityNodesTOC;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityNodesTOCAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityNodesTOCAverage;
     end
     type='Node ';
     IDs=handles.Ps.B.NodeNameID;
 else
     if get(handles.s1,'Value')%Age
         handles.vv=handles.Ps.CompQualityLinksAge;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityLinksAgeAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityLinksAgeAverage;
     elseif get(handles.s2,'Value')%Chlorine
         handles.vv=handles.Ps.CompQualityLinksChlorine;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityLinksChlorineAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityLinksChlorineAverage;
     elseif get(handles.s3,'Value')%THMs
         handles.vv=handles.Ps.CompQualityLinksTHMs;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityLinksTHMsAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityLinksTHMsAverage;
     elseif get(handles.s4,'Value')%TOC
         handles.vv=handles.Ps.CompQualityLinksTOC;
-        handles.Ps.MsxResultsAverage=handles.Ps.CompQualityLinksTOCAverage;
+        handles.Ps.MSXResultsAverage=handles.Ps.CompQualityLinksTOCAverage;
     end
     type='Link ';
     IDs=handles.Ps.B.LinkNameID;
@@ -218,17 +218,17 @@ if sum(species)>1
     k=1;
     for i=handles.speciesInd
         if get(handles.frplot,'Value') && get(handles.allnodes,'value')
-            if i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine'))
+            if i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine'))
                 str=['Chlorine of ',type,char(IDs(index))];
-                handles.MsxSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine')))));
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'WaterAge'))
+                handles.MSXSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine')))));
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'WaterAge'))
                 str=['Age of ',type,char(IDs(index))];
-                handles.MsxSpeciesUnits='Age(hrs)';
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC'))
-                handles.MsxSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC')))));
+                handles.MSXSpeciesUnits='Age(hrs)';
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC'))
+                handles.MSXSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC')))));
                 str=['TOC of ',type,char(IDs(index))];
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs'))
-                handles.MsxSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs')))));
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs'))
+                handles.MSXSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs')))));
                 str=['THMs of ',type,char(IDs(index))];
             end
     
@@ -241,7 +241,7 @@ if sum(species)>1
             xlim('auto');
             a=regexp(str,'\s','split');a(3)=strcat(a(3),'s');
             title(['Frequency Plot: ',[a{1},' ',a{2},' ',a{3}]],'Parent',sb);
-            xlabel(handles.MsxSpeciesUnits,'Parent',sb);
+            xlabel(handles.MSXSpeciesUnits,'Parent',sb);
             if get(handles.NodesID,'value')
                 ylabel('Nodes','Parent',sb);
             else
@@ -252,17 +252,17 @@ if sum(species)>1
             set(handles.Mean,'String',Mean);
             k=k+1;
         elseif get(handles.frplot,'Value') && ~get(handles.allnodes,'value');
-            if i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine'))
+            if i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine'))
                 str=['Chlorine of ',type,char(IDs(index))];
-                handles.MsxSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine')))));
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'WaterAge'))
+                handles.MSXSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine')))));
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'WaterAge'))
                 str=['Age of ',type,char(IDs(index))];
-                handles.MsxSpeciesUnits='Age(hrs)';
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC'))
-                handles.MsxSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC')))));
+                handles.MSXSpeciesUnits='Age(hrs)';
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC'))
+                handles.MSXSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC')))));
                 str=['TOC of ',type,char(IDs(index))];
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs'))
-                handles.MsxSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs')))));
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs'))
+                handles.MSXSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs')))));
                 str=['THMs of ',type,char(IDs(index))];
             end
     
@@ -274,7 +274,7 @@ if sum(species)>1
             hist(handles.vv{i}(start:endT,index),'Parent',sb);
             xlim('auto');
             title(['Frequency Plot: ',str],'Parent',sb);
-            xlabel(handles.MsxSpeciesUnits,'Parent',sb);
+            xlabel(handles.MSXSpeciesUnits,'Parent',sb);
             ylabel('','Parent',sb);
             set(handles.Max,'String',Max);
             set(handles.Min,'String',Min);
@@ -284,21 +284,21 @@ if sum(species)>1
             sb=subplot(mm,pp,k,'Parent',handles.uipanel1);
             plot(timehrs(start:endT),handles.vv{i}(start:endT,index),'Parent',sb,'LineWidth',1.5);
             xlim([start endT]);
-            if i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine'))
+            if i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine'))
                 str=['Chlorine of ',type,char(IDs(index))];
-                handles.MsxSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine')))));
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'WaterAge'))
+                handles.MSXSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine')))));
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'WaterAge'))
                 str=['Age of ',type,char(IDs(index))];
-                handles.MsxSpeciesUnits='Age(hrs)';
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC'))
-                handles.MsxSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC')))));
+                handles.MSXSpeciesUnits='Age(hrs)';
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC'))
+                handles.MSXSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC')))));
                 str=['TOC of ',type,char(IDs(index))];
-            elseif i==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs'))
-                handles.MsxSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs')))));
+            elseif i==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs'))
+                handles.MSXSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs')))));
                 str=['THMs of ',type,char(IDs(index))];
             end
             xlabel('Time(hrs)','Parent',sb);
-            ylabel(handles.MsxSpeciesUnits,'Parent',sb);
+            ylabel(handles.MSXSpeciesUnits,'Parent',sb);
             title(str,'Parent',sb);k=k+1;            
         end
     end
@@ -322,21 +322,21 @@ else
     plot(timehrs(start:endT),handles.vv(start:endT,index)-handles.vv(start:endT,index)*0.05,'r','Parent',sb);
     xlim([start endT]);
 
-    if handles.speciesInd==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine'))
+    if handles.speciesInd==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine'))
         str=['Chlorine of ',type,char(IDs(index))];
-        handles.MsxSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'Chlorine')))));
-    elseif handles.speciesInd==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'WaterAge'))
+        handles.MSXSpeciesUnits=sprintf('Chlorine(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'Chlorine')))));
+    elseif handles.speciesInd==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'WaterAge'))
         str=['Age of ',type,char(IDs(index))];
-        handles.MsxSpeciesUnits='Age(hrs)';
-    elseif handles.speciesInd==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC'))
-        handles.MsxSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'TOC')))));
+        handles.MSXSpeciesUnits='Age(hrs)';
+    elseif handles.speciesInd==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC'))
+        handles.MSXSpeciesUnits=sprintf('TOC(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'TOC')))));
         str=['TOC of ',type,char(IDs(index))];
-    elseif handles.speciesInd==find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs'))
-        handles.MsxSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MsxSpeciesUnits(find(strcmp(handles.Ps.B.MsxSpeciesNameID,'THMs')))));
+    elseif handles.speciesInd==find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs'))
+        handles.MSXSpeciesUnits=sprintf('THMs(%s/L)',char(handles.Ps.B.MSXSpeciesUnits(find(strcmp(handles.Ps.B.MSXSpeciesNameID,'THMs')))));
         str=['THMs of ',type,char(IDs(index))];
     end
     xlabel('Time(hrs)','Parent',sb);
-    ylabel(handles.MsxSpeciesUnits,'Parent',sb);
+    ylabel(handles.MSXSpeciesUnits,'Parent',sb);
     title(str,'Parent',sb);
 
     Max=max(handles.vv(start:endT,index));
@@ -346,14 +346,14 @@ else
 
     sb1=subplot(2,1,2,'Parent',handles.uipanel1);
     if get(handles.allnodes,'value');
-        hist(handles.Ps.MsxResultsAverage,'Parent',sb1);
+        hist(handles.Ps.MSXResultsAverage,'Parent',sb1);
         title(['Frequency Plot: ',[a{1},' ',a{2},' ',a{3}]],'Parent',sb1);
         ylabel('Nodes','Parent',sb1);
     elseif ~get(handles.allnodes,'value');
         hist(handles.vv(start:endT,index),'Parent',sb1);
         title(['Frequency Plot: ',str],'Parent',sb1);
     end        
-    xlabel(handles.MsxSpeciesUnits,'Parent',sb1);
+    xlabel(handles.MSXSpeciesUnits,'Parent',sb1);
     set(handles.Max,'String',Max);
     set(handles.Min,'String',Min);
     set(handles.Mean,'String',Mean);

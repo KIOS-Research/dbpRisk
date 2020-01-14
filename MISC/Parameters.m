@@ -354,10 +354,10 @@ function LoadFile_Callback(hObject, eventdata, handles)
         handles.P.FlowPrc{3}= P.FlowPrc{3}; 
         handles.P.FlowSamples{3}= P.FlowSamples{3}; 
         
-        handles.PipeTankTable=zeros(handles.Ps.B.MsxParametersCount,3);
+        handles.PipeTankTable=zeros(handles.Ps.B.MSXParametersCount,3);
 
         t=7;
-        for i=1:handles.Ps.B.MsxParametersCount
+        for i=1:handles.Ps.B.MSXParametersCount
             handles.PipeTankTable(i,1)= P.FlowPrc{t}; 
             handles.PipeTankTable(i,2)= P.FlowSamples{t};
             handles.PipeTankTable(i,3)= P.PipeTankTable(i,3);%Temperature
@@ -367,7 +367,7 @@ function LoadFile_Callback(hObject, eventdata, handles)
         set(handles.FlowPrcPatterns,'String',P.FlowPrc{6});
         set(handles.FlowSamplesPatterns,'String',P.FlowSamples{6});
         
-        handles.ReservoirTable=zeros(handles.Ps.B.NodeReservoirCount,handles.Ps.B.MsxSpeciesCount-1);
+        handles.ReservoirTable=zeros(handles.Ps.B.NodeReservoirCount,handles.Ps.B.MSXSpeciesCount-1);
         for i=1:handles.Ps.B.NodeReservoirCount
             handles.ReservoirTable(i,1)=P.QualityNodeRes(i,1);
             handles.ReservoirTable(i,2)=P.QualityNodeRes(i,2);
@@ -565,10 +565,10 @@ function P=GetGuiParameters(handles)
         
     % Pipe & Tanks    
     P.PipeTankTable=handles.PipeTankTable;
-    P.Coeff=ones(handles.Ps.B.LinkPipeCount+handles.Ps.B.NodeTankCount,handles.Ps.B.MsxParametersCount);
+    P.Coeff=ones(handles.Ps.B.LinkPipeCount+handles.Ps.B.NodeTankCount,handles.Ps.B.MSXParametersCount);
     
     t=7;
-    for i=1:handles.Ps.B.MsxParametersCount
+    for i=1:handles.Ps.B.MSXParametersCount
         P.FlowPrc{t}=P.PipeTankTable(i,1);
         P.FlowSamples{t}=P.PipeTankTable(i,2);
         P.Coeff(:,i)=P.Coeff(:,i)*P.PipeTankTable(i,3);
@@ -581,8 +581,8 @@ function P=GetGuiParameters(handles)
         P.Elevation, P.BaseDemand, P.Patterns};
     
     t=7;
-    for i=1:handles.Ps.B.MsxParametersCount
-        P.FlowParameters{t}=handles.Ps.B.MsxParametersNameID{i};
+    for i=1:handles.Ps.B.MSXParametersCount
+        P.FlowParameters{t}=handles.Ps.B.MSXParametersNameID{i};
         P.FlowValues{t}=P.Coeff(:,i);
         t=t+1;
     end
@@ -1048,9 +1048,9 @@ end
     if handles.PipeTankTableCount
         set(handles.Table,'data',handles.PipeTankTable);
     else
-        handles.PipeTankTable=zeros(handles.Ps.B.MsxParametersCount,3);
+        handles.PipeTankTable=zeros(handles.Ps.B.MSXParametersCount,3);
         t=7;
-        for i=1:handles.Ps.B.MsxParametersCount
+        for i=1:handles.Ps.B.MSXParametersCount
             handles.PipeTankTable(i,1)= handles.P.FlowPrc{t}; 
             handles.PipeTankTable(i,2)= handles.P.FlowSamples{t};
             handles.PipeTankTable(i,3)=handles.Init(i);
@@ -1075,7 +1075,7 @@ end
     end
     set(handles.Table,'ColumnEditable',str2num(ColumnEditable));
     
-    set(handles.Table,'RowName',[handles.Ps.B.MsxParametersNameID]);
+    set(handles.Table,'RowName',[handles.Ps.B.MSXParametersNameID]);
     
     set(handles.tabNodes,'value',0);
     set(handles.tabPatterns,'value',0);
@@ -1176,7 +1176,7 @@ end
     if handles.ReservoirTableCount
         set(handles.Table,'data',handles.ReservoirTable);
     else
-        handles.ReservoirTable=zeros(handles.Ps.B.NodeReservoirCount,handles.Ps.B.MsxSpeciesCount-1);
+        handles.ReservoirTable=zeros(handles.Ps.B.NodeReservoirCount,handles.Ps.B.MSXSpeciesCount-1);
         for i=1:handles.Ps.B.NodeReservoirCount
             handles.ReservoirTable(i,1)=handles.P.QualityNodeRes(i,1);
             handles.ReservoirTable(i,2)=handles.P.QualityNodeRes(i,2);
@@ -1188,11 +1188,11 @@ end
     ReservoirTableColumnName(1,1:handles.Ps.B.NodeReservoirCount)=handles.Ps.B.NodeNameID(handles.Ps.B.NodeReservoirIndex);
     set(handles.Table, 'RowName', ReservoirTableColumnName);
     
-    for u=1:handles.Ps.B.MsxSpeciesCount
+    for u=1:handles.Ps.B.MSXSpeciesCount
         if u==1%water age
-            spUnits{u}=[handles.Ps.B.MsxSpeciesNameID{u},'(Hrs)'];
+            spUnits{u}=[handles.Ps.B.MSXSpeciesNameID{u},'(Hrs)'];
         else
-            spUnits{u}=[handles.Ps.B.MsxSpeciesNameID{u},'(',handles.Ps.B.MsxSpeciesUnits{u},'/L)'];
+            spUnits{u}=[handles.Ps.B.MSXSpeciesNameID{u},'(',handles.Ps.B.MSXSpeciesUnits{u},'/L)'];
         end
     end
    
@@ -1200,7 +1200,7 @@ end
   
     % Column Edit Table
     ColumnEditable='true ';
-    for i=1:handles.Ps.B.MsxSpeciesCount
+    for i=1:handles.Ps.B.MSXSpeciesCount
         ColumnEditable = strcat({ColumnEditable},' true');
         ColumnEditable = ColumnEditable{1,1};
     end
