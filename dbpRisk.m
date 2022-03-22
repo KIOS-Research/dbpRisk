@@ -535,7 +535,7 @@ function Map_Callback(hObject, eventdata, handles)
             handles.MapOn=0;               
             save([pwd,'\RESULTS\','map.1'],'handles','-mat');  
             hold on;
-            [unused,flag] = urlread('http://ucy.ac.cy');
+            [unused,flag] = urlread('https://www.kios.ucy.ac.cy/');
             if flag==1
                 handles.MapOFF=plot_google_map(handles);
 
@@ -559,7 +559,7 @@ function Map_Callback(hObject, eventdata, handles)
         handles.MapOn=1;               
         save([pwd,'\RESULTS\','map.1'],'handles','-mat');  
         hold on;
-        [unused,flag] = urlread('http://ucy.ac.cy');
+        [unused,flag] = urlread('https://www.kios.ucy.ac.cy/');
         if flag==1
             handles.MapOFF=plot_google_map(handles);
 
