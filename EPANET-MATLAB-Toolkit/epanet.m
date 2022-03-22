@@ -2476,22 +2476,22 @@ classdef epanet <handle
                 return;
             end
             %EPANET Version 2.1
-            chckfunctions=libfunctions(obj.LibEPANET);
-            if sum(strcmp(chckfunctions,'ENsetbasedemand'))
-                NodeNumDemandC=obj.getNodeDemandCategoriesNumber;
-                for i=1:obj.getNodeJunctionCount
-                    for u=1:NodeNumDemandC(i)
-                        [obj.Errcode] = ENsetbasedemand(i, u, value{u}(i),obj.LibEPANET);
-                    end
-                end
-            else %version epanet20012
-                if nargin==3, indices = value; value=varargin{1}; else indices = getNodeIndices(obj,varargin); end
-                j=1;
-                for i=indices
-                    [obj.Errcode] = ENsetnodevalue(i,obj.ToolkitConstants.EN_BASEDEMAND, value(j),obj.LibEPANET); j=j+1;
-                    if obj.Errcode, error(obj.getError(obj.Errcode)), return; end   
-                end
+%             chckfunctions=libfunctions(obj.LibEPANET);
+%             if sum(strcmp(chckfunctions,'ENsetbasedemand'))
+%                 NodeNumDemandC=obj.getNodeDemandCategoriesNumber;
+%                 for i=1:obj.getNodeJunctionCount
+%                     for u=1:NodeNumDemandC(i)
+%                         [obj.Errcode] = ENsetbasedemand(i, u, value{u}(i),obj.LibEPANET);
+%                     end
+%                 end
+%             else %version epanet20012
+            if nargin==3, indices = value; value=varargin{1}; else indices = getNodeIndices(obj,varargin); end
+            j=1;
+            for i=indices
+                [obj.Errcode] = ENsetnodevalue(i,obj.ToolkitConstants.EN_BASEDEMAND, value(j),obj.LibEPANET); j=j+1;
+                if obj.Errcode, error(obj.getError(obj.Errcode)), return; end   
             end
+%             end
         end
         function setNodeCoordinates(obj, value, varargin)
             if nargin==3, indices = value; value=varargin{1}; else indices = getNodeIndices(obj,varargin); end

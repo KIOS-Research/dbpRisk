@@ -835,7 +835,7 @@ function Run_Callback(hObject, eventdata, handles)
         B.setLinkLength(P.FlowParamScenarios{2}(:, 1)');
         B.setLinkRoughnessCoeff(P.FlowParamScenarios{3}(:,1)');
         B.setNodeElevations(P.FlowParamScenarios{4}(:, 1)');
-        B.setNodeBaseDemands({P.FlowParamScenarios{5}(:, 1)'});
+        B.setNodeBaseDemands(P.FlowParamScenarios{5}(:, 1)');
         if ~isempty(P.FlowValues{6})
             if size(P.Patterns,1)==1
                 B.setPatternMatrix(P.FlowParamScenarios{6}(:,1)');
